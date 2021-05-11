@@ -25,6 +25,9 @@ node http web api framework
     app.route.GET('/hello').then(({ctx})=>{
         ctx.sendHTML('hello world');
     });
+    app.route.GET(/^\/hello/(\w+)$/).then(({ctx,match})=>{
+        ctx.sendHTML(`hello ${match[0]}`);
+    });
     app.run();
     ```
 3. 执行
@@ -34,6 +37,7 @@ node http web api framework
 4. 浏览器访问
     ```
     http://127.0.0.1:8080/hello
+    http://127.0.0.1:8080/hello/xiaoming
     ```
 
 ### 三、使用说明书
