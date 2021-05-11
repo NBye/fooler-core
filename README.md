@@ -18,14 +18,14 @@ node http web api framework
     - npm install fooler-core
 2. 编写代码 test2.js
     ```javascript
-    const {Fooler} = require('fooler-core');
+    const { Fooler } = require('fooler-core');
     const app = new Fooler({
         p: 8080
     });
-    app.route.GET('/hello').then(({ctx})=>{
+    app.route.GET('/hello').then(({ ctx }) => {
         ctx.sendHTML('hello world');
     });
-    app.route.GET(/^\/hello/(\w+)$/).then(({ctx,match})=>{
+    app.route.GET(/^\/hello\/(\w+)$/).then(({ ctx, match }) => {
         ctx.sendHTML(`hello ${match[0]}`);
     });
     app.run();
