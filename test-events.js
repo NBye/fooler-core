@@ -1,4 +1,4 @@
-const { loadlogRouter, loadlogEvents } = require('./index');
+const { loadlogRouter, loadlogEvents } = require('fooler-core');
 
 module.exports = function (app) {
     app.on('error', async function (err) {
