@@ -1,0 +1,30 @@
+{
+  "name": "fooler-core",
+  "version": "1.0.0",
+  "description": "node http web api framework.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NBye/fooler-core.git"
+  },
+  "keywords": [
+    "node",
+    "http",
+    "web",
+    "api",
+    "router",
+    "middleware"
+  ],
+  "author": "NBye",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NBye/fooler-core/issues"
+  },
+  "homepage": "https://github.com/NBye/fooler-core#readme",
+  "dependencies": {
+    "xml2js": "^0.4.23"
+  }
+}
