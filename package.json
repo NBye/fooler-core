@@ -4,7 +4,8 @@
   "description": "node http web api framework.",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "node test.js",
+    "test2": "node test2.js"
   },
   "repository": {
     "type": "git",
