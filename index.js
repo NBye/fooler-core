@@ -32,3 +32,6 @@ exports.loadlogRouter = function (service) {
     console.log(data);
     return data;
 };
+exports.IDate = IDate;
+exports.Storage = require('./src/lib/Storage');
+exports.Utils = require('./src/lib/Utils');

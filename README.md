@@ -8,27 +8,28 @@ node http web api framework
     - 本框架只有 Router(路由)、control(过程)
 3. 易于拓展
     - Router 可以设置无限个 control
-    - 根据 control 的设置顺序与作用可以起到 middleware、pipline、controller 的效果
-    - Router 可以设置子集Router，向树杈一样，一层层向子集调用
+    - 根据 control 的设置顺序与作用自行分组，可以起到 middleware、pipline、controller 的效果，并且规则用法一致。
+    - Router 可以设置子集 Router，向树杈一样，一层层向子集调用，并一层层向外抛出结果。
 4. 对接框架处理
-    - 热更新、重启、全局错误接收
+    - 热更新、重启、全局错误接收，可自定制系统维护系统。
 
 ### 二、安装使用
 1. 安装
     - npm install fooler-core
-2. 编写代码 app.js
+2. 编写代码 test2.js
     ```javascript
-    const Fooler = require('fooler-core');
+    const {Fooler} = require('fooler-core');
     const app = new Fooler({
         p: 8080
     });
     app.route.GET('/hello').then(({ctx})=>{
         ctx.sendHTML('hello world');
-    })
+    });
+    app.run();
     ```
 3. 执行
     ```
-    node app.js
+    node test2.js
     ```
 4. 浏览器访问
     ```
@@ -77,11 +78,11 @@ node http web api framework
     - roue.catch(contr1,contr2,contr3)       //命中路由执行异常接收过程设置,返回自己
     - roue.finally(contr1,contr2,contr3)     //命中路最后如果为发生send过程设置,返回自己
 
-### 四、高级使用阳历
+### 四、高级使用示例
 
 1. 编写入口文件 app.js
     ```javascript
-    const Fooler = require('fooler-core')
+    const {Fooler} = require('fooler-core')
     const app = new Fooler({
         //web服务端口（默认80）
         p: 8080,   
