@@ -57,18 +57,18 @@ node http web api framework
             - 路由的表达式为正则，可以通过正则的(\w+)捕获参数
             - roue.when(/^\/user\/(info)\/(\d+)/ , ["GET"].then(({ctx,match})=>ctx.sendJSON(match))
         - 2.2.2 字符串路由
-            - 路由的表达式为字符串，满足表达式全等与uri则会命中，字符串路由会将父级路由与自己路由组合匹配命中
+            - 路由的表达式为字符串，满足表达式全等与uri则会命中，字符串路由会将父级路由与子集路由表达式组合匹配。
             - roue.when('/user/info' , ["GET"].then(({ctx})=>ctx.sendJSON([ctx.GET(),ctx.POST()]))
         - 2.2.3 混合路由
-            - 路由与子路由，多个子路由之间，随意混合。正则不会与父级别路合并匹配，但字符串路由会
+            - 路由与子路由，多个子路由之间，随意混合。正则不会与父级别路合并匹配，但字符串路由会。
     - 2.3 过程 “control”
-        - 过程是路由命中后的的处理函数
+        - 过程是路由命中后的处理函数
         - 2.3.1 顺序过程
             - 过程被按先后设置顺序执行
             - roue.then(contr1,contr2,contr3).then(contr4).then(contr5)
         - 2.3.2 并行过程
             - 过程被并行执行
-            - roue.then([contr1,contr2,contr3])
+            - roue.then([contrA1,contrA2,contrA3],contrB)
 3. 路由的方法
     - roue.when(rule,["GET","协议方法"])      //路由命中规则,返回子Router
     - roue.GET(rule)                         //路由命中规则,返回子Router
@@ -79,8 +79,8 @@ node http web api framework
     - roue.HEAD (rule)                       //路由命中规则,返回子Router
     - roue.childens                          //路由添加子路由,返回自己
     - roue.then(contr1,contr2,contr3)        //命中路由执行过程设置,返回自己
-    - roue.catch(contr1,contr2,contr3)       //命中路由执行异常接收过程设置,返回自己
-    - roue.finally(contr1,contr2,contr3)     //命中路最后如果为发生send过程设置,返回自己
+    - roue.catch(contr4,contr5,contr6)       //命中路由执行异常接收过程设置,返回自己
+    - roue.finally(contr7,contr8,contr9)     //命中路最后如果为发生send过程设置,返回自己
 
 ### 四、完整使用示例
 
@@ -155,7 +155,7 @@ node http web api framework
         }, '加载事件完成时');
         app.on('load-router', async function (service) {
             loadlogRouter(service);
-        }, '加载路由完成时时');
+        }, '加载路由完成时');
     }
     ```
 
