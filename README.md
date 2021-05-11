@@ -78,7 +78,7 @@ node http web api framework
     - roue.catch(contr1,contr2,contr3)       //命中路由执行异常接收过程设置,返回自己
     - roue.finally(contr1,contr2,contr3)     //命中路最后如果为发生send过程设置,返回自己
 
-### 四、高级使用示例
+### 四、完整使用示例
 
 1. 编写入口文件 app.js
     ```javascript
@@ -155,7 +155,7 @@ node http web api framework
     }
     ```
 
-### 五、过程详解
+### 五、过程定义使用详解
 ```javascript
 /**
  * 这是一个处理过程示例
@@ -205,3 +205,14 @@ const control = async function ({ ctx, options, router, match = null, err = null
     ctx.sendHTML(html, status)          //发送HTML数据 并设置 completed=true
 };
 ```
+
+### 六、进阶
+1. session 的使用
+2. Gzip 的开启
+3. 跨域的开启
+4. Rpc 模式使用
+5. 与VUE结合使用
+6. 系统拓展开发
+7. 静态文件服务
+
+> 请查看 https://github.com/NBye 中更多的fooler 组件
