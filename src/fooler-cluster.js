@@ -7,11 +7,11 @@ const { httpOnData } = require("./lib/Utils.js");
 const httpProcessExec = async function (route, procedures, match, ctx, err) {
     for (let i = 0; i < procedures.length; i++) {
         if (procedures[i] instanceof Function) {
-            await procedures[i]({ ctx, options: ctx.options, route, match, err: err });
+            await procedures[i](Object.assign({ ctx, route, match, err }, ctx));
         } else if (procedures[i] instanceof Array) {
             let list = [];
             procedures[i].forEach(procedure => {
-                list.push(procedure({ ctx, options: ctx.options, route, match, err: err }));
+                list.push(procedure(Object.assign({ ctx, route, match, err }, ctx)));
             });
             await Promise.all(list);
         } else {
