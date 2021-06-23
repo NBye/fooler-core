@@ -4,8 +4,8 @@ node http web api framework
 1. 安装简单
     - 引包即用，可单文件多文件均可开发。
 2. 概念少
-    - 不像其他框架那样，Router、middleware、pipline、controller， 每个概念都有独立规则与用法。
-    - 本框架只有 Router(路由)、control(过程)，变通control的开发与顺序可以做到框架的增强。
+    - 不像其他框架那样，Router、middleware、pipline、controller、Event、Stack 每个概念都有独立规则与用法。
+    - 本框架只有 Router(路由)、control(过程) 2个概念，变通control的开发与顺序可以做到框架的增强。
 3. 易于拓展
     - Router 可以设置无限个 control
     - 根据 control 的设置顺序与作用自行分组，可以起到 middleware、pipline、controller 的效果，并且规则用法一致。
@@ -39,7 +39,9 @@ node http web api framework
     http://127.0.0.1:8080/hello
     http://127.0.0.1:8080/hello/xiaoming
     ```
-
+5. 联系作者
+    - 邮箱：505064953@qq.com
+    - 微信：NBye_oO
 ### 三、使用说明书
 
 1. 事件 “event”
