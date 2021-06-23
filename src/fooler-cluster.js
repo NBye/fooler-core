@@ -7,6 +7,7 @@ const { httpOnData } = require("./lib/Utils.js");
 const httpProcessExec = async function (route, procedures, match, ctx, err) {
     for (let i = 0; i < procedures.length; i++) {
         if (procedures[i] instanceof Function) {
+            await (route.parser || httpOnData)(ctx.req);
             await procedures[i](Object.assign({ ctx, route, match, err }, ctx));
         } else if (procedures[i] instanceof Array) {
             let list = [];
@@ -59,7 +60,6 @@ module.exports = function (service) {
         let ctx = new Context({ req, res, service });
         let url = req.url.split('?')[0];
         try {
-            await httpOnData(req);
             await httpProcess(service.route, [], ctx, url);
         } catch (err) {
             ctx.sendHTML(err.stack, 500);

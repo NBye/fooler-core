@@ -6,10 +6,11 @@ class Router {
     method = null;
     ChildenRouters = [];
     service = null;
-    constructor(expression, method, service) {
+    constructor(expression, method, service, parser) {
         this.expression = expression;
         this.method = method;
         this.service = service;
+        this.parser = parser;
     }
 
     do(uri, method) {
@@ -33,12 +34,12 @@ class Router {
             return false;
         }
     }
-    when(expression, method) {
+    when(expression, method, parser) {
         //如果父子路由表达式都为字符串时，子路由拼接继承父路由表达式
         if (typeof expression == 'string' && typeof this.expression == 'string') {
             expression = this.expression + expression;
         }
-        let route = new Router(expression, method);
+        let route = new Router(expression, method, this.service, parser || this.parser);
         this.ChildenRouters.push(route);
         return route;
     }
@@ -59,23 +60,23 @@ class Router {
         return this;
     }
 
-    GET(uri) {
-        return this.when(uri, ['GET']);
+    GET(uri, parser) {
+        return this.when(uri, ['GET'], parser);
     }
-    POST(uri) {
-        return this.when(uri, ['POST']);
+    POST(uri, parser) {
+        return this.when(uri, ['POST'], parser);
     }
-    OPTIONS(uri) {
-        return this.when(uri, ['OPTIONS']);
+    OPTIONS(uri, parser) {
+        return this.when(uri, ['OPTIONS'], parser);
     }
-    DELETE(uri) {
-        return this.when(uri, ['DELETE']);
+    DELETE(uri, parser) {
+        return this.when(uri, ['DELETE'], parser);
     }
-    PUT(uri) {
-        return this.when(uri, ['PUT']);
+    PUT(uri, parser) {
+        return this.when(uri, ['PUT'], parser);
     }
-    HEAD(uri) {
-        return this.when(uri, ['HEAD']);
+    HEAD(uri, parser) {
+        return this.when(uri, ['HEAD'], parser);
     }
 }
 module.exports = Router;

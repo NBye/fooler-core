@@ -16,15 +16,15 @@ class Context {
     }
     GET(key) {
         httpParseQuery(this.req);
-        return getData(this.req._query_data, key);
+        return getData(this.req._query_data || {}, key);
     }
     POST(key) {
         httpParseRequest(this.req);
-        return getData(this.req._post_data, key);
+        return getData(this.req._post_data || {}, key);
     }
     FILES(key) {
         httpParseRequest(this.req);
-        return getData(this.req._file_data, key);
+        return getData(this.req._file_data || {}, key);
     }
     setHeader(name, value) {
         this.res.setHeader(name, value);
