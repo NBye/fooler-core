@@ -2,7 +2,7 @@
 node http web api framework
 ### 一、框架优势
 1. 安装简单
-    - 引包即用，可单文件多文件均可开发。
+    - 引包即用，包占资源小，没有三方依赖。
 2. 概念少
     - 不像其他框架那样，Router、middleware、pipline、controller、Event、Stack 每个概念都有独立规则与用法。
     - 本框架只有 Router(路由)、control(过程) 2个概念，变通control的开发与顺序可以做到框架的增强。
