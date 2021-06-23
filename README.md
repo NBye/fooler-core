@@ -50,7 +50,9 @@ node http web api framework
     - 请看：/test-routes.js
     - 2.1 子路由
         - 任何路由都可以无限制创建子路由，向树枝一样，可以无限向下分
-        - roue.when(path, ["GET", "POST", "PUT"]).childens((r)=>{});
+        - roue.when(path, ["GET", "POST", "PUT"],parser).childens((r)=>{});
+        - roue.when(路由表达式, 请求方法, 请求解析器).childens((r)=>{});
+        - 请求解析器请看test2.js
     - 2.2 命中
         - 路由会根据配置的正则或者url路径进行匹配，匹配成功则命中，同时只能命中考前的1个
         - 2.2.1 正则路由
