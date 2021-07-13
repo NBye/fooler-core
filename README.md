@@ -1,6 +1,8 @@
 # fooler-core
-fooler-core 是一个http服务框架；
-node http web api framework
+1. fooler-core 是一个http服务框架;
+2. 它可以作为 API 接口服务；
+3. 也可以作为 前端 页面交互的服务；
+ - node http web api framework
 ### 一、框架优势
 1. 安装简单
     - 引包即用，包占资源小，没有三方依赖。
