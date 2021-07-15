@@ -1,5 +1,8 @@
 # fooler-core
-node http web api framework
+1. fooler-core 是一个http服务框架;
+2. 它可以作为 API 接口服务；
+3. 也可以作为 前端 页面交互的服务；
+ - node http web api framework
 ### 一、框架优势
 1. 安装简单
     - 引包即用，包占资源小，没有三方依赖。
@@ -56,7 +59,7 @@ node http web api framework
         - roue.when(路由表达式, 请求方法, 请求解析器).childens((r)=>{});
         - 请求解析器请看test2.js
     - 2.2 命中
-        - 路由会根据配置的正则或者url路径进行匹配，匹配成功则命中，同时只能命中考前的1个
+        - 路由会根据配置的正则或者url路径进行匹配，匹配成功则命中，同时只能命中靠前定义的那1个
         - 2.2.1 正则路由
             - 路由的表达式为正则，可以通过正则的(\w+)捕获参数
             - roue.when(/^\/user\/(info)\/(\d+)/ , ["GET"].then(({ctx,match})=>ctx.sendJSON(match))
@@ -65,6 +68,7 @@ node http web api framework
             - roue.when('/user/info' , ["GET"].then(({ctx})=>ctx.sendJSON([ctx.GET(),ctx.POST()]))
         - 2.2.3 混合路由
             - 路由与子路由，多个子路由之间，随意混合。正则不会与父级别路合并匹配，但字符串路由会。
+            - roue.when('/user').childens(r=>r.when('/info')) 会命中 /user/info
     - 2.3 过程 “control”
         - 过程是路由命中后的处理函数
         - 2.3.1 顺序过程
