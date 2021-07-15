@@ -1,8 +1,8 @@
 # fooler-core
 1. fooler-core 是一个http服务框架;
 2. 它可以作为 API 接口服务；
-3. 也可以作为 前端 页面交互的服务；
- - node http web api framework
+3. 也可以作为 前端 页面的渲染服务；
+ - 关键词：node http web api framework
 ### 一、框架优势
 1. 安装简单
     - 引包即用，包占资源小，没有三方依赖。
@@ -45,7 +45,117 @@
 5. 联系作者
     - 邮箱：505064953@qq.com
     - 微信：NBye_oO
-### 三、使用说明书
+### 三、配置详解
+```javascript
+app = new Fooler({p: 8080});
+//或者
+app = Fooler.create({
+    p: 8080,            //http 服务端口（默认80） 
+    route: __dirname + '/app-routes',   //定义路由规则的js文件（推荐此方式，可以分开定义路由并且支持热重载）
+    event: __dirname + '/app-events',   //定义系统事件的js文件（推荐此方式，支持热重载）
+    processes: 1,       //服务进程数,缺省或0时=cpu核数，在expand定义可以热更新动态调整进程数
+    log: {              //日志定输出向文件设置
+        level: ['error', 'log', 'warn'], //捕获的级别
+        //自定义格式化日志格式
+        // error: (...args) => { return JSON.stringify(args) }, 
+        // log: (...args) => { return JSON.stringify(args) },
+        // warn: (...args) => { return JSON.stringify(args) },
+        //日志目录配置，一旦配置，console.log,error,warn 将会写入
+        path: '/test.{{yyyy-mm-dd}}.log', 
+    },
+    expand: `${__dirname}/conf.json`,  //配置拓展，可以在热更新时进行重载,并覆盖以上配置
+});
+```
+### 四、使用路由
+```javascript
+//app-routes.js
+module.exports = async function (roue) {
+    roue.then(async ({ ctx }) => {
+        //请求开始时调用
+    }).catch(async ({ err, ctx }) => {
+        //异常未被其他路由接收时，会被再次接收
+    }).finally(async ({ ctx }) => {
+        //请求执行完最后会执行
+    });
+
+    //1. 字符串路由,当URL 参数之前 == /string/roue 时
+    roue.when('/string/roue').then(async ({ ctx }) => {
+        //命中时调用
+    }).catch(async ({ err, ctx }) => {
+        //异常时调用
+    }).finally(async ({ ctx }) => {
+        //命中结束后调用
+    });
+
+    //2. 这则路由,当URL 参数之前 满足当前正则表达式 时
+    roue.when(/^user\/(\d+)$/).then(async ({ ctx,match }) => {
+        //命中时调用
+        //收集匹配参数
+        let [user_id] = match;
+    }).catch(async ({ err, ctx }) => {
+        //异常时调用
+    }).finally(async ({ ctx }) => {
+        //命中结束后调用
+    });
+
+    //3. 字符串子路由
+    roue.when('/string').childens((r) => {
+        //当URL 参数之前 == /string/roue 时
+        r.when('/roue').then(async ({ ctx }) => {
+            //命中时调用
+        }).catch(async ({ err, ctx }) => {
+            //异常时调用
+        }).finally(async ({ ctx }) => {
+            //命中结束后调用
+        });
+    });
+
+    //4. 正则子路由 
+    roue.when(/^user/).then(async ({ ctx,match }) => {
+        //注意：正则路由，不能继承父级表达式，必须每次正则都全等
+        roue.when(/^user\/(\d+)$/).then(async ({ ctx,match }) => {
+            //命中时调用
+            //收集匹配参数
+            let [user_id] = match;
+        });
+        //异常不设置，会被复层级接收
+    }).catch(async ({ err, ctx }) => { 
+        //异常时调用
+    }).finally(async ({ ctx }) => {
+        //命中结束后调用
+    });
+
+    //5. 路由方法 when 的其他用法 
+    roue.when('/url',['GET']) 
+    //等价于
+    roue.GET('/url') 
+
+    roue.when('/url',['POST']) 
+    roue.POST('/url') 
+
+    roue.when('/url',['PUT']) 
+    roue.PUT('/url') 
+
+    roue.when('/url',['OPTIONS']) 
+    roue.OPTIONS('/url') 
+
+    roue.when('/url',['DELETE']) 
+    roue.DELETE('/url') 
+
+    roue.when('/url',['HEAD']) 
+    roue.HEAD('/url') 
+
+    //6. 路由的 并行 串行
+    //按顺序执行 func1 到 func5
+    roue.when('/url',['GET']).then(func1,func2,func3).then(func4).then(func5);
+    //并发执行 func1~func3
+    roue.when('/url',['GET']).then([func1,func2,func3]);
+
+    //catch、finally 同样支持
+}
+```
+
+### 五、使用说明书
 
 1. 事件 “event”
     - 事件是系统提供捕获：错误、热重启、进程重启、事件路由的重载
@@ -90,7 +200,7 @@
     - roue.catch(contr4,contr5,contr6)       //命中路由执行异常接收过程设置,返回自己
     - roue.finally(contr7,contr8,contr9)     //命中路最后如果为发生send过程设置,返回自己
 
-### 四、完整使用示例
+### 六、完整使用示例
 
 1. 编写入口文件 app.js
     ```javascript
@@ -167,7 +277,7 @@
     }
     ```
 
-### 五、过程定义使用详解
+### 七、过程定义使用详解
 ```javascript
 /**
  * 这是一个处理过程示例
@@ -218,7 +328,50 @@ const control = async function ({ ctx, options, router, match = null, err = null
 };
 ```
 
-### 六、进阶
+### 八、热重载 与 重启
+```javascript
+//app-routes.js
+module.exports = async function (roue) {
+    const process = require('process');
+    roue.GET('/reload').then(({app})=>{
+        //通知服务 热重载
+        process.send({ event:'reload' })
+    });
+    roue.GET('/restart').then(({app})=>{
+        //通知服务 重启
+        process.send({ event:'restart' })
+    });
+    //无论 热重载还是重启 都会重新订阅路由，重新加载配置
+    //可以定义路由暴露接口
+}
+```
+
+### 九、设置自定义request 解析器
+```javascript
+//app-routes.js
+module.exports = async function (roue) {
+    roue.when('/custom/parse/request',["POST"],async (req) => {})
+    roue.POST('/custom/parse/request',async (req) => {
+        return new Promise((resolve, reject) => {
+            let buff = Buffer.from('');
+            req.on('data', (chunk) => {
+                buff = Buffer.concat([buff, chunk]);
+            });
+            req.on('end', () => {
+                req._query_data = {}; //可自定义解析结果 GET
+                req._post_data = {};  //可自定义解析结果 POST
+                req._file_data = {};  //可自定义解析结果 FILE
+                resolve();
+            });
+            req.on('error', () => {
+                reject(err);
+            });
+        });
+    });
+}
+```
+
+### 十、进阶
 1. session 的使用
 2. Gzip 的开启
 3. 跨域的开启
