@@ -372,12 +372,12 @@ module.exports = async function (roue) {
 ```
 
 ### 十、进阶
-1. session 的使用
-2. Gzip 的开启
-3. 跨域的开启
-4. Rpc 模式使用
-5. 与VUE结合使用
-6. 系统拓展开发
-7. 静态文件服务
+1. [session 的使用](https://github.com/NBye/fooler-session)
+2. [Gzip 的开启](https://github.com/NBye/fooler-gzip)
+3. [跨域的开启](https://github.com/NBye/fooler-gzip)
+4. [Rpc模式使用](https://github.com/NBye/fooler-rpc)
+5. [Vue组件化开发](https://github.com/NBye/fooler-vue)
+6. [静态文件服务](https://github.com/NBye/fooler-static)
+
 
 > 请查看 https://github.com/NBye 中更多的fooler 组件
