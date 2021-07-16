@@ -7,8 +7,8 @@ const { httpOnData } = require("./lib/Utils.js");
 const httpProcessExec = async function (route, procedures, match, ctx, err) {
     for (let i = 0; i < procedures.length; i++) {
         if (procedures[i] instanceof Function) {
-            if (!ctx.req._parsed && (route.parser || route.ChildenRouters.length == 0)) {
-                ctx.req._parsed = true;
+            if (!ctx.parsed && route.parser !== false) {
+                ctx.parsed = true;
                 await (route.parser || httpOnData)(ctx.req);
             }
             await procedures[i](Object.assign({ ctx, route, match, err }, ctx));

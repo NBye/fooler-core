@@ -347,11 +347,22 @@ module.exports = async function (roue) {
 ```
 
 ### 九、设置自定义request 解析器
+自定义解析价值，为了方便与部分接口对于数据流的特殊处理；
+可以针对不同的应用场景使用不同的解析方式，提升性能；
 ```javascript
 //app-routes.js
 module.exports = async function (roue) {
-    roue.when('/custom/parse/request',["POST"],async (req) => {})
+    //roue.when(路由规则,请求协议,解析器)
+    //roue.POST(路由规则,解析器)
+    //解析器 === false 时，强制不解析，缺省则 为自动默认解析，设置函数为，自定义解析
+    roue.when('/custom/parse/request',["POST"],async (req) => {
+        //这里写解析过程
+        req._query_data = {};  //可自定义解析结果 GET
+        req._post_data  = {};  //可自定义解析结果 POST
+        req._file_data  = {};  //可自定义解析结果 FILE
+    });
     roue.POST('/custom/parse/request',async (req) => {
+        //这里写解析过程
         return new Promise((resolve, reject) => {
             let buff = Buffer.from('');
             req.on('data', (chunk) => {

@@ -39,7 +39,7 @@ class Router {
         if (typeof expression == 'string' && typeof this.expression == 'string') {
             expression = this.expression + expression;
         }
-        let route = new Router(expression, method, this.service, parser || this.parser);
+        let route = new Router(expression, method, this.service, parser);
         this.ChildenRouters.push(route);
         return route;
     }

@@ -13,6 +13,7 @@ class Context {
         this.options = service.options;
         this.data = new Storage();
         this.cookie = new Cookie(req, res);
+        this.parsed = false;
     }
     GET(key) {
         httpParseQuery(this.req);

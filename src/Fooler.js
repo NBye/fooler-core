@@ -54,7 +54,7 @@ class Fooler {
             }
             //3. 子进程重新装在路由
             if (!cluster.isMaster && this.options.route) {
-                this.route = new Router('', null, this);
+                this.route = new Router('', null, this, false);
                 await require(this.options.route)(this.route);
                 await this.trigger('load-events', [this], true);
                 await this.trigger('load-router', [this], true);
