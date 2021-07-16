@@ -40,10 +40,41 @@ app.route.when('/hello', ['POST'], false).then(({ ctx }) => {
         });
     }).then(({ ctx }) => {
         ctx.sendHTML('hello world');
-        console.log(2, {
+        console.log({
             GET: ctx.GET(),
             POST: ctx.POST(),
+            FILES: ctx.FILES(),
         })
     })
 });
+
+/**
+ * 使用过程代替自定义解析器的方式
+ */
+app.route.POST('/test/parse', false).then(async ({ ctx }) => {
+    return new Promise((resolve, reject) => {
+        let buff = Buffer.from('');
+        let req = ctx.req;
+        req.on('data', (chunk) => {
+            buff = Buffer.concat([buff, chunk]);
+        });
+        req.on('end', () => {
+            req._query_data = { get: 1 }; //可自定义解析结果 GET
+            req._post_data = { post: 2 };  //可自定义解析结果 POST
+            req._file_data = { file: 3 };  //可自定义解析结果 FILE
+            resolve();
+        });
+        req.on('error', () => {
+            reject(err);
+        });
+    });
+}).then(({ ctx }) => {
+    ctx.sendHTML('hello world');
+    console.log(2, {
+        GET: ctx.GET(),
+        POST: ctx.POST(),
+        FILES: ctx.FILES(),
+    })
+})
+
 app.run();
