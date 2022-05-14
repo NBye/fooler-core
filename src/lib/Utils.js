@@ -195,8 +195,36 @@ const setData = function (data, key, val) {
     };
     return data;
 }
-
-
+const process_argv_parse = function () {
+    let options = {};
+    let list = process.argv.slice(2);
+    let key = '';
+    list.forEach(item => {
+        if (/^([^=]+)=(.+)$/.test(item)) {
+            let [_, k, v] = item.match(/^([^=]+)=(.+)$/);
+            k = k.replace(/^-{1,2}/g, '');
+            options[k] = process_argv_parse_type_val(v);
+            key = '';
+        } else if (/^-{1,2}[^-]/.test(item)) {
+            key = item.replace(/^-{1,2}/g, '');
+            options[key] = options[key] || true;
+        } else if (key) {
+            options[key] = process_argv_parse_type_val(item);
+            key = '';
+        }
+    })
+    return options
+}
+const process_argv_parse_type_val = function (v) {
+    if (/^\d+$/.test(v)) {
+        return parseInt(v);
+    } else if (['false', 'true'].indexOf(v.toLowerCase()) > -1) {
+        return Boolean(['false', 'true'].indexOf(v.toLowerCase()));
+    } else {
+        return v;
+    }
+}
+exports.process_argv_parse = process_argv_parse;
 exports.httpBuildQuery = httpBuildQuery;
 exports.httpBuildUrl = httpBuildUrl;
 exports.httpUrlArgs = httpUrlArgs;

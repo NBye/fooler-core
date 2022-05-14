@@ -1,4 +1,5 @@
-const { Fooler } = require('fooler-core');
+// const { Fooler } = require('fooler-core');
+const { Fooler } = require('./index');
 const app = new Fooler({
     root: __dirname,    //项目根目录
     p: 8080,            //web服务端口（默认80）

@@ -1,12 +1,14 @@
 const cluster = require("cluster");
 const Router = require('./Router');
 const fs = require('fs');
+const Utils = require('./lib/Utils');
 
 class Fooler {
     options = { p: 80 };
     events = {};
     route = null;
     constructor(options) {
+        Object.assign(options, Utils.process_argv_parse());
         options.port && (options.p = options.port);
         Object.assign(this.options, options);
         this.route = new Router('', null, this);
