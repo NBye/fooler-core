@@ -1,7 +1,6 @@
 // const { Fooler } = require('fooler-core');
 const { Fooler } = require('./index');
 const app = new Fooler({
-    root: __dirname,    //项目根目录
     p: 8080,            //web服务端口（默认80）
     processes: 1,       //服务进程数,缺省或0时=cpu核数，在expand定义可以热更新动态调整进程数
     route: __dirname + '/test-routes',   //(建议使用)初始化路由模块

@@ -1,6 +1,7 @@
 const cluster = require("cluster");
 const Router = require('./Router');
 const fs = require('fs');
+const path = require('path');
 const Utils = require('./lib/Utils');
 
 class Fooler {
@@ -8,6 +9,11 @@ class Fooler {
     events = {};
     route = null;
     constructor(options) {
+        if (options.root) {
+            global.__root__ = options.root;
+        } else {
+            global.__root__ = path.dirname(process.argv[1]);
+        }
         Object.assign(options, Utils.process_argv_parse());
         options.port && (options.p = options.port);
         Object.assign(this.options, options);
