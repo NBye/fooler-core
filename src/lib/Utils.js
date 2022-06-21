@@ -80,7 +80,6 @@ const httpUrlArgs = function (url) {
     foreach(data, httpGetTrf, data);
     return data;
 };
-
 const httpParseCookie = function (req) {
     if (!req._cookie_data) {
         let cookie = {}
@@ -99,8 +98,10 @@ const httpParseQuery = function (req) {
         req._query_data = httpUrlArgs(req.url);
     }
 };
-const httpParseRequest = function (req) {
-    if (req._buff_content) {
+const httpParseStream = async function ({ ctx }) {
+    let req = ctx.req;
+    if (!req._post_data) {
+        await httpOnData(req);
         let post = {}, files = {};
         if (/json/i.test(req.headers['content-type'])) {
             post = JSON.parse(req._buff_content.toString());
@@ -152,7 +153,7 @@ const httpParseRequest = function (req) {
         } else {
             post = req._buff_content.toString();
         }
-        req._buff_content = null;
+        req._buff_content = null; //减少内存消耗；
         req._post_data = post;
         req._file_data = files;
     }
@@ -172,7 +173,6 @@ const httpOnData = async function (req) {
         });
     });
 }
-
 const getData = function (data, key) {
     key && key.split('.').forEach(k => {
         if (typeof data == 'object' && data[k] != 'undefined') {
@@ -224,13 +224,15 @@ const process_argv_parse_type_val = function (v) {
         return v;
     }
 }
+
 exports.process_argv_parse = process_argv_parse;
 exports.httpBuildQuery = httpBuildQuery;
 exports.httpBuildUrl = httpBuildUrl;
 exports.httpUrlArgs = httpUrlArgs;
 exports.httpParseCookie = httpParseCookie;
 exports.httpParseQuery = httpParseQuery;
-exports.httpParseRequest = httpParseRequest;
+exports.httpParseStream = httpParseStream;
+exports.httpParsePost = httpParseStream;
 exports.httpOnData = httpOnData;
 exports.getData = getData;
 exports.setData = setData;

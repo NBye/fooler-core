@@ -60,10 +60,14 @@ class Fooler {
                 this.events = {};
                 await require(this.options.event)(this);
             }
-            //3. 子进程重新装在路由
+            //3. 子进程重新装载路由
             if (!cluster.isMaster && this.options.route) {
                 this.route = new Router('', null, this, false);
                 await require(this.options.route)(this.route);
+
+            }
+            //4. 子进程发布事件通知
+            if (!cluster.isMaster) {
                 await this.trigger('load-events', [this], true);
                 await this.trigger('load-router', [this], true);
             }

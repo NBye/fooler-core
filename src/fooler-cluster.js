@@ -2,15 +2,10 @@ const http = require("http");
 const Log = require("./lib/Log");
 const process = require('process');
 const Context = require('./Context');
-const { httpOnData } = require("./lib/Utils.js");
 
 const httpProcessExec = async function (route, procedures, match, ctx, err) {
     for (let i = 0; i < procedures.length; i++) {
         if (procedures[i] instanceof Function) {
-            if (!ctx.parsed && route.parser !== false) {
-                ctx.parsed = true;
-                await (route.parser || httpOnData)(ctx.req);
-            }
             await procedures[i](Object.assign({ ctx, route, match, err }, ctx));
         } else if (procedures[i] instanceof Array) {
             let list = [];
@@ -24,16 +19,16 @@ const httpProcessExec = async function (route, procedures, match, ctx, err) {
     }
 }
 
-const httpProcess = async function (route, match, ctx, url) {
+const httpProcess = async function (route, match, ctx, uri) {
     try {
         //1. 执行then;
         await httpProcessExec(route, route.procedures, match, ctx);
         //2. 执行子路由;
         for (let i = 0; i < route.ChildenRouters.length; i++) {
             let croute = route.ChildenRouters[i];
-            let cmatch = croute.do(url, ctx.req.method);
+            let cmatch = croute.do({ uri, method: ctx.req.method, ctx, domain: ctx.req.headers['host'] });
             if (cmatch) {
-                await httpProcess(croute, cmatch, ctx, url);
+                await httpProcess(croute, cmatch, ctx, uri);
                 break;
             }
         }
@@ -61,11 +56,12 @@ module.exports = function (service) {
     });
     http.createServer(async (req, res) => {
         let ctx = new Context({ req, res, service });
-        let url = req.url.split('?')[0];
+        let uri = req.url.split('?')[0];
         try {
-            await httpProcess(service.route, [], ctx, url);
+            await httpProcess(service.route, [], ctx, uri);
         } catch (err) {
-            ctx.sendHTML(err.stack, 500);
+            let unerror = 'Unknown Error !';
+            ctx.sendHTML(err ? (err.stack || unerror) : unerror, 500);
         }
         if (!ctx.completed) {
             ctx.sendHTML('Not Found !', 404);

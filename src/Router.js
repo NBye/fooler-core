@@ -6,16 +6,20 @@ class Router {
     method = null;
     ChildenRouters = [];
     service = null;
-    constructor(expression, method, service, parser) {
+    constructor(expression, method, service, domain) {
         this.expression = expression;
         this.method = method;
         this.service = service;
-        this.parser = parser;
+        this.host = domain;
     }
 
-    do(uri, method) {
-        if (this.method && this.method.indexOf(method) < 0) {
-            return false; //http method 不一致跳过
+    do({ uri, method, domain, ctx }) {
+        if (this.host instanceof RegExp && !this.host.test(domain)) {
+            return false; //http domain 不匹配跳过
+        } else if (typeof this.host == 'string' && this.host !== domain) {
+            return false; //http domain 不一致跳过
+        } else if (this.method && this.method.indexOf(method) < 0) {
+            return false; //http method 未启用跳过
         } else if (this.expression instanceof RegExp) {
             let match = uri.match(this.expression);
             if (match) {
@@ -23,8 +27,11 @@ class Router {
                 match.shift();
                 return match;
             } else {
-                return false; // 这则模式不匹配跳过
+                return false; // 正则模式不匹配跳过
             }
+        } else if (typeof this.expression == 'function') {
+            let ret = this.expression({ uri, method, domain, ctx });
+            return ret instanceof Array ? ret : (ret ? [] : false);
         } else if (uri.indexOf(this.expression) === 0) {
             if (this.ChildenRouters.length == 0 && this.expression != uri) {
                 return false; //字符串子节点不能完全匹配跳过
@@ -34,12 +41,18 @@ class Router {
             return false;
         }
     }
-    when(expression, method, parser) {
+
+    domain(domain) {
+        let route = new Router('', null, this.service, domain);
+        this.ChildenRouters.push(route);
+        return route;
+    }
+    when(expression, method, domain) {
         //如果父子路由表达式都为字符串时，子路由拼接继承父路由表达式
         if (typeof expression == 'string' && typeof this.expression == 'string') {
             expression = this.expression + expression;
         }
-        let route = new Router(expression, method, this.service, parser);
+        let route = new Router(expression, method, this.service, domain || this.host);
         this.ChildenRouters.push(route);
         return route;
     }
@@ -60,23 +73,23 @@ class Router {
         return this;
     }
 
-    GET(uri, parser) {
-        return this.when(uri, ['GET'], parser);
+    GET(uri, domain) {
+        return this.when(uri, ['GET'], domain);
     }
-    POST(uri, parser) {
-        return this.when(uri, ['POST'], parser);
+    POST(uri, domain) {
+        return this.when(uri, ['POST'], domain);
     }
-    OPTIONS(uri, parser) {
-        return this.when(uri, ['OPTIONS'], parser);
+    OPTIONS(uri, domain) {
+        return this.when(uri, ['OPTIONS'], domain);
     }
-    DELETE(uri, parser) {
-        return this.when(uri, ['DELETE'], parser);
+    DELETE(uri, domain) {
+        return this.when(uri, ['DELETE'], domain);
     }
-    PUT(uri, parser) {
-        return this.when(uri, ['PUT'], parser);
+    PUT(uri, domain) {
+        return this.when(uri, ['PUT'], domain);
     }
-    HEAD(uri, parser) {
-        return this.when(uri, ['HEAD'], parser);
+    HEAD(uri, domain) {
+        return this.when(uri, ['HEAD'], domain);
     }
 }
 module.exports = Router;

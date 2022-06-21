@@ -1,4 +1,4 @@
-const { httpParseQuery, httpParseRequest, getData } = require('./lib/Utils');
+const { httpParseQuery, getData } = require('./lib/Utils');
 const Storage = require('./lib/Storage');
 const Cookie = require('./lib/Cookie');
 
@@ -13,18 +13,15 @@ class Context {
         this.options = service.options;
         this.data = new Storage();
         this.cookie = new Cookie(req, res);
-        this.parsed = false;
     }
     GET(key) {
         httpParseQuery(this.req);
         return getData(this.req._query_data || {}, key);
     }
     POST(key) {
-        httpParseRequest(this.req);
         return getData(this.req._post_data || {}, key);
     }
     FILES(key) {
-        httpParseRequest(this.req);
         return getData(this.req._file_data || {}, key);
     }
     setHeader(name, value) {

@@ -70,6 +70,11 @@ module.exports = async function (roue) {
     roue.catch(contr1,contr2,contr3)       //命中路由执行异常接收过程设置,返回自己
     roue.finally(contr1,contr2,contr3)     //命中路最后如果为发生send过程设置,返回自己
 
+    如果业务需要获得 post，file 数据，必须为路由添加post解析工具，系统自带：
+    const { Utils } = require('fooler-core');
+    route.then(Utils.httpParseStream) //这是关键
+    route.then(/.*/).then(({ctx})=>{ctx.sendHTML('你好')});
+
 4. 测试地址
 </pre>
 

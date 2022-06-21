@@ -29,6 +29,6 @@
     },
     "homepage": "https://github.com/NBye/fooler-core#readme",
     "dependencies": {
-        "xml2js": "^0.4.23"
+        "xml2js": "^0.5.01"
     }
 }

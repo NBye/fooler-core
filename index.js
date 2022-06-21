@@ -1,6 +1,10 @@
 const IDate = require('./src/lib/IDate');
 const os = require('os');
+
 exports.Fooler = require('./src/Fooler');
+exports.IDate = IDate;
+exports.Storage = require('./src/lib/Storage');
+exports.Utils = require('./src/lib/Utils');
 exports.loadlogEvents = function (service) {
     let info = [
         `> Master:${process.pid} ${os.hostname()} Events:`,
@@ -22,7 +26,7 @@ exports.loadlogRouter = function (service) {
         pf && info.push([
             ' '.repeat(pf * 4) + '>',
             r.procedures.length + r.catchs.length,
-            `[${r.method ? r.method.join(',') : '*'}]`,
+            `[${r.method ? r.method.join(',') : '*'}${pf == 1 ? (' ' + r.host) : ''}]`,
             r.expression || '/',
         ].join(' '));
         r.ChildenRouters.forEach((route) => getRoute(route, pf + 1))
@@ -32,6 +36,3 @@ exports.loadlogRouter = function (service) {
     console.log(data);
     return data;
 };
-exports.IDate = IDate;
-exports.Storage = require('./src/lib/Storage');
-exports.Utils = require('./src/lib/Utils');
