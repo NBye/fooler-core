@@ -100,7 +100,7 @@ const httpParseQuery = function (req) {
 };
 const httpParseStream = async function ({ ctx }) {
     let req = ctx.req;
-    if (!req._post_data) {
+    if (!req._buff_content) {
         await httpOnData(req);
         let post = {}, files = {};
         if (/json/i.test(req.headers['content-type'])) {
@@ -153,7 +153,6 @@ const httpParseStream = async function ({ ctx }) {
         } else {
             post = req._buff_content.toString();
         }
-        req._buff_content = null; //减少内存消耗；
         req._post_data = post;
         req._file_data = files;
     }
