@@ -1,14 +1,15 @@
 const os = require("os");
 const fs = require("fs");
 const IDate = require("./IDate");
-const writeLog = async function (args, type, options) {
-    let path = options.path;
+const writeLog = async function (args, type, env, conf) {
+    let path = conf.path;
     path.match(/{{([^}]+)}}/g).forEach(match => {
         path = path.replace(match, new IDate().format(match.substring(2, match.length - 2)));
+        path = path.replace('env', env);
     });
     let content = '';
-    if (typeof options[type] == 'function') {
-        content = await options[type](...args);
+    if (typeof conf[type] == 'function') {
+        content = await conf[type](...args);
         content += os.EOL;
     } else {
         args.forEach(c => {
@@ -24,15 +25,18 @@ const writeLog = async function (args, type, options) {
         });
     }
     let pr = new IDate().format('yyyy-mm-dd hh:ii:ss') + ' [' + (type.toUpperCase()) + ']' + os.EOL
-    fs.appendFile(path, pr + content, () => { });
+    fs.appendFile(path, pr + content, (err) => {
+        err && warn(err.message, pr + content);
+    });
 };
 const backs = {};
 const warn = console.warn;
 exports.bindLog = function (options) {
-    if (!options || !options.path) {
+    if (!options || !options.log || !options.log.path) {
         return;
     }
-    let lives = options.level || ['error', 'log', 'warn', 'info'];
+    let { log, env } = options;
+    let lives = log.level || ['error', 'log', 'warn', 'info'];
     lives.forEach((type) => {
         backs[type] = console[type];
         if (!backs[type]) {
@@ -40,7 +44,7 @@ exports.bindLog = function (options) {
         } else {
             global.console[type] = function (...args) {
                 try {
-                    writeLog(args, type, options);
+                    writeLog(args, type, env, log);
                 } catch (e) {
                     warn('warn writeLog:', e)
                 }

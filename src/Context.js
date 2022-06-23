@@ -1,6 +1,7 @@
 const { httpParseQuery, getData } = require('./lib/Utils');
 const Storage = require('./lib/Storage');
 const Cookie = require('./lib/Cookie');
+const Config = require('./lib/Config');
 
 class Context {
     res = null;
@@ -13,6 +14,9 @@ class Context {
         this.options = service.options;
         this.data = new Storage();
         this.cookie = new Cookie(req, res);
+    }
+    conf(key) {
+        return Config.get(this.options, key);
     }
     GET(key) {
         httpParseQuery(this.req);

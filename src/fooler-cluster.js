@@ -45,7 +45,7 @@ const httpProcess = async function (route, match, ctx, uri) {
 }
 
 module.exports = function (service) {
-    service.options.log && Log.bindLog(service.options.log);
+    Log.bindLog(service.options);
     process.on('message', function (event) {
         if (event == 'reload') {
             service.reload();
