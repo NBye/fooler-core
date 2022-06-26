@@ -1,6 +1,7 @@
 const os = require("os");
 const fs = require("fs");
 const IDate = require("./IDate");
+const Path = require("path");
 const writeLog = async function (args, type, env, conf) {
     let path = conf.path;
     path.match(/{{([^}]+)}}/g).forEach(match => {
@@ -25,6 +26,14 @@ const writeLog = async function (args, type, env, conf) {
         });
     }
     let pr = new IDate().format('yyyy-mm-dd hh:ii:ss') + ' [' + (type.toUpperCase()) + ']' + os.EOL
+    path = Path.normalize(path);
+    let file = '';
+    Path.dirname(path).split('/').forEach(m => {
+        file += '/' + m;
+        try {
+            fs.mkdirSync(file);
+        } catch (e) { }
+    });
     fs.appendFile(path, pr + content, (err) => {
         err && warn(err.message, pr + content);
     });
