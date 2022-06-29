@@ -28,6 +28,9 @@ class Context {
     FILES(key) {
         return getData(this.req._file_data || {}, key);
     }
+    headers(key) {
+        return getData(this.req.headers, key);
+    }
     setHeader(name, value) {
         this.res.setHeader(name, value);
     }

@@ -1,6 +1,6 @@
 {
     "name": "fooler-core",
-    "version": "1.2.5",
+    "version": "1.2.6",
     "description": "node http web api framework. Project process manager.",
     "main": "index.js",
     "scripts": {
