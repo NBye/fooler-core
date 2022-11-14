@@ -350,6 +350,7 @@ module.exports = async function (roue) {
 ### 九、设置自定义request 解析器
 自定义解析价值，为了方便与部分接口对于数据流的特殊处理；
 可以针对不同的应用场景使用不同的解析方式，提升性能；
+new 框架默认不在支持默认post解析器了
 ```javascript
 //app-routes.js
 module.exports = async function (roue) {
@@ -381,6 +382,12 @@ module.exports = async function (roue) {
         });
     });
 }
+//如果使用内置post解析器
+const { Utils } = require('fooler-core');
+roue.then(Utils.httpParseStream); 
+roue.POST(/.*/).then(({ctx})=>{
+    ctx.sendJSON(ctx.POST());
+})
 ```
 
 ### 十、进阶
