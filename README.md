@@ -87,7 +87,7 @@ module.exports = async function (roue) {
         //命中结束后调用
     });
 
-    //2. 这则路由,当URL 参数之前 满足当前正则表达式 时
+    //2. 正则路由,当URL 参数之前 满足当前正则表达式 时
     roue.when(/^user\/(\d+)$/).then(async ({ ctx,match }) => {
         //命中时调用
         //收集匹配参数
