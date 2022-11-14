@@ -320,6 +320,7 @@ const control = async function ({ ctx, options, router, match = null, err = null
     ctx.FILES(key);             //获取提交上来的图片{key:{data:Buffer,filename:'文件名',type:'文件IME类型'}}
     ctx.GET(key);               //获取GET参数
     ctx.POST(key);              //获取POST参数
+    ctx.headers(key=null);      //获取请求的headers，key==null时全部；
     ctx.setdHeader(key, val);   //设置header
 
     ctx.send({ text, status, headers }) //发送数据 并设置 completed=true
